@@ -33,6 +33,7 @@ mongoose
 
 const Schema = mongoose.Schema;
 const WordSchema = new Schema({
+  //should be word: String
   iambic: String,
 });
 

@@ -85,11 +85,12 @@ function Board() {
       );
 
       if (isFilled && isValidWord) {
-        //you should check here if its also filled with a correct word  
+        //you should check here if its also filled with a correct word
         const statusCopy = [...fieldStatus];
         let slicedAnswer = todaysWord.slice(0, 6);
         let leftCopy = left;
 
+        //map contains all the inputted values
         let map = new Map();
         for (let i = 0; i < 6; i++) {
           if (map.has(slicedArr[i])) {
@@ -100,26 +101,44 @@ function Board() {
         }
         console.log("map", map);
 
+        //first get all correct values
+        let correct_array = [];
+
+        let answerMap = new Map();
+        for (let i = 0; i < 6; i++) {
+          if (answerMap.has(slicedAnswer[i])) {
+            answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) + 1);
+          } else {
+            answerMap.set(slicedAnswer[i], 1);
+          }
+        }
+
+        // First, flag the correct ones
         for (let i = 0; i < 6; i++) {
           if (slicedArr[i] === slicedAnswer[i]) {
-            statusCopy[leftCopy] = "correct";
-            map.set(slicedArr[i], map.get(slicedArr[i]) - 1); // decrement the value from map
-          } else if (todaysWord.includes(slicedArr[i])) {
-            console.log(todaysWord, ", ", slicedAnswer[i]);
-            if (statusCopy[leftCopy] !== "correct") {
-              if (map.get(slicedArr[i]) > 0) {
-                // check if the map value is not empty
-                statusCopy[leftCopy] = "close";
-                map.set(slicedArr[i], map.get(slicedArr[i]) - 1); // decrement the value from map
-              }
-            }
-          } else {
-            statusCopy[leftCopy] = "incorrect";
+            statusCopy[left + i] = "correct";
+            map.set(slicedArr[i], map.get(slicedArr[i]) - 1);
+            answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) - 1);
           }
-          leftCopy = leftCopy + 1;
+        }
+
+        // Then check for close ones
+        for (let i = 0; i < 6; i++) {
+          if (
+            statusCopy[left + i] !== "correct" &&
+            todaysWord.includes(slicedArr[i])
+          ) {
+            if (answerMap.get(slicedArr[i]) > 0) {
+              statusCopy[left + i] = "close";
+              answerMap.set(slicedArr[i], answerMap.get(slicedArr[i]) - 1);
+            } else {
+              statusCopy[left + i] = "incorrect";
+            }
+          } else if (statusCopy[left + i] !== "correct") {
+            statusCopy[left + i] = "incorrect";
+          }
         }
         setFieldStatus(statusCopy);
-
         //goal
         if (slicedAnswer.join() === slicedArr.join()) {
           setWins((w) => w + 1);
