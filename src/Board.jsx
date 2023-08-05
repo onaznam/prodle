@@ -85,7 +85,7 @@ function Board() {
       );
 
       if (isFilled && isValidWord) {
-        //you should check here if its also filled with a correct word
+        //you should check here if its also filled with a correct word  
         const statusCopy = [...fieldStatus];
         let slicedAnswer = todaysWord.slice(0, 6);
         let leftCopy = left;
@@ -100,52 +100,24 @@ function Board() {
         }
         console.log("map", map);
 
-        //color greens first
         for (let i = 0; i < 6; i++) {
           if (slicedArr[i] === slicedAnswer[i]) {
             statusCopy[leftCopy] = "correct";
             map.set(slicedArr[i], map.get(slicedArr[i]) - 1); // decrement the value from map
-          }
-          leftCopy = leftCopy + 1;
-        }
-        setFieldStatus(statusCopy);
-        leftCopy = left;
-
-        //color the rest
-        for (let i = 0; i < 6; i++) {
-          if (todaysWord.includes(slicedArr[i])) {
+          } else if (todaysWord.includes(slicedArr[i])) {
             console.log(todaysWord, ", ", slicedAnswer[i]);
             if (statusCopy[leftCopy] !== "correct") {
               if (map.get(slicedArr[i]) > 0) {
                 // check if the map value is not empty
                 statusCopy[leftCopy] = "close";
                 map.set(slicedArr[i], map.get(slicedArr[i]) - 1); // decrement the value from map
-              } else {
-                statusCopy[leftCopy] = "incorrect";
               }
             }
+          } else {
+            statusCopy[leftCopy] = "incorrect";
           }
           leftCopy = leftCopy + 1;
         }
-
-        // for (let i = 0; i < 6; i++) {
-        //   if (slicedArr[i] === slicedAnswer[i]) {
-        //     statusCopy[leftCopy] = "correct";
-        //     map.set(slicedArr[i], map.get(slicedArr[i]) - 1); // decrement the value from map
-        //   } else if (todaysWord.includes(slicedArr[i])) {
-        //     console.log(todaysWord, ", ", slicedAnswer[i]);
-        //     if (statusCopy[leftCopy] !== "correct") {
-        //       if (map.get(slicedArr[i]) > 0) {
-        //         // check if the map value is not empty
-        //         statusCopy[leftCopy] = "close";
-        //         map.set(slicedArr[i], map.get(slicedArr[i]) - 1); // decrement the value from map
-        //       }
-        //     }
-        //   } else {
-        //     statusCopy[leftCopy] = "incorrect";
-        //   }
-        //   leftCopy = leftCopy + 1;
-        // }
         setFieldStatus(statusCopy);
 
         //goal
