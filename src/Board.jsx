@@ -37,9 +37,11 @@ function Board() {
     if (e.key === "Backspace" || e.key === "Delete") {
       const updateValues = [...letters];
       if (letters[i] === "" && i > 0) {
-        updateValues[i - 1] = "";
-        setLetters(updateValues);
-        refs[i - 1].current.focus();
+        if (i % 6 !== 0) {
+          updateValues[i - 1] = "";
+          setLetters(updateValues);
+          refs[i - 1].current.focus();
+        }
       } else {
         updateValues[i] = "";
         setLetters(updateValues);
