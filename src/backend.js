@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+app.use(express.json());
+
 require("dotenv").config();
 
 //So it can run locally
@@ -39,6 +42,7 @@ const WordSchema = new Schema({
 
 const Words = mongoose.model("Words", WordSchema, "words");
 
+//gets 17.3k words
 app.get("/api/words", async (req, res) => {
   try {
     // Fetch all words from MongoDB
@@ -50,6 +54,40 @@ app.get("/api/words", async (req, res) => {
     // Handle error
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+const UserSchema = new Schema({
+  username: String,
+  password: String,
+  wins: Number,
+  losses: Number,
+  streak: Number
+});
+
+const Users = mongoose.model("Users", UserSchema, "users");
+
+
+//register
+app.post("/register", async (req, res) =>{
+  const userExists = await Users.findOne({username: req.body.username});
+  if(userExists){
+    return res.status(400).send("User already exists");
+  }
+  try{
+    const hashPW = await bcrypt.hash(req.body.password, 10);
+    const user = new Users({
+      username: req.body.username,
+      password: hashPW,
+      wins: 0,
+      losses: 0,
+      streak: 0
+    });
+    const newUser = await user.save();
+    res.json(newUser);
+  }
+  catch(err){
+    res.status(500).json({error: err.message});
   }
 });
 

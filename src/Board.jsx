@@ -1,6 +1,6 @@
 import React, { useState, createRef, useEffect } from "react";
 import styled from "styled-components";
-
+//#TODO add a timer
 function Board() {
   const [letters, setLetters] = useState(Array(36).fill(""));
   const [fieldStatus, setFieldStatus] = useState(Array(36).fill(""));
@@ -101,7 +101,6 @@ function Board() {
             map.set(slicedArr[i], 1);
           }
         }
-        console.log("map", map);
 
         //first get all correct values
         let correct_array = [];
