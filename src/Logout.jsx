@@ -1,9 +1,31 @@
 import React from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 function Logout() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    axios
+      .post("http://localhost:5000/logout", {}, { withCredentials: true })
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("An error occurred during logout.");
+      });
+  };
   return (
     <ContainerDiv>
-      <form>meow</form>
+      <div className="form">
+        <div className="div-container">
+          <h2>Logout</h2>
+          <div className="button-container">
+            <button onClick={handleLogout}>Logout</button>
+            <button onClick={() => navigate("/")}>Home</button>
+          </div>
+        </div>
+      </div>
     </ContainerDiv>
   );
 }
@@ -16,6 +38,7 @@ const ContainerDiv = styled.div`
   height: 100vh;
   font-family: "Montserrat", sans-serif;
   background-color: #c7c7c7;
+
   button {
     background-color: #007bff;
     color: white;
@@ -31,10 +54,19 @@ const ContainerDiv = styled.div`
       transform: scale(1.05);
     }
   }
-  div {
+  .div-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    .button-container {
+      display: flex;
+    }
+    .button-container button:first-child {
+      margin-right: 1rem;
+    }
+  }
+  h2 {
+    margin-top: 4rem;
   }
   h3 {
     text-decoration: underline;
@@ -47,7 +79,7 @@ const ContainerDiv = styled.div`
     }
   }
 
-  form {
+  .form {
     background-color: white;
     border-radius: 0.5rem;
     height: 16rem;

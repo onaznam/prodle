@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import InstructionModal from "./InstructionModal";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 function Landing() {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const handleOpen = () => {
     setModalOpen(true);
@@ -12,14 +14,41 @@ function Landing() {
   const handleClose = () => {
     setModalOpen(false);
   };
+
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/user", {
+        withCredentials: true,
+      });
+      // Checks if the response contains username field
+      if (response.data && response.data.username) {
+        setUser(response.data);
+        console.log("meow", user);
+      } else {
+        setUser(null);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   return (
     <ContainerDiv>
       <LandingDiv>
         <h1>Prodle</h1>
         <div>
           <button onClick={handleOpen}>Instructions</button>
-          <button onClick={() => navigate("/board")}>Play</button>
-          <button onClick={() => navigate("/login")}>Login</button>
+          {user && (
+            <>
+              <button onClick={() => navigate("/board")}>Play now!</button>
+              <button onClick={() => navigate("/logout")}>Logout</button>
+            </>
+          )}
+          {!user && <button onClick={() => navigate("/login")}>Login</button>}
           <InstructionModal isOpen={isModalOpen} onClose={handleClose}>
             <InstructionDiv>
               <h2>Every day users have a chance to guess the daily word</h2>

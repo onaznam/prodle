@@ -1,5 +1,7 @@
 import React, { useState, createRef, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 //#TODO add a timer
 function Board() {
   const [letters, setLetters] = useState(Array(36).fill(""));
@@ -13,6 +15,9 @@ function Board() {
   const [isWin, setIsWin] = useState(false);
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [userObject, setUserObject] = useState({});
+  const navigate = useNavigate();
 
   const refs = Array(36)
     .fill()
@@ -144,9 +149,11 @@ function Board() {
         if (slicedAnswer.join() === slicedArr.join()) {
           setWins((w) => w + 1);
           setIsWin(true);
+          handleResult("win");
         } else if (row === 6 && !(slicedAnswer.join() === slicedArr.join())) {
           setLosses((l) => l + 1);
           setIsLoss(true);
+          handleResult("loss");
         } else {
           setRow((r) => r + 1);
         }
@@ -158,6 +165,28 @@ function Board() {
         setLetters(copyLetters);
         refs[left].current.focus();
       }
+    }
+  };
+
+  const handleResult = (value) => {
+    if (user) {
+      axios
+        .patch(
+          "http://localhost:5000/updateResults",
+          {
+            username: userObject.username,
+            value: value,
+          },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          if (response) {
+            // render component with the results
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
@@ -213,6 +242,55 @@ function Board() {
     }
   }, [isLoading]);
 
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/user", {
+        withCredentials: true,
+      });
+      // Checks if the response contains username field
+      if (response.data && response.data.username) {
+        setUser(response.data);
+        console.log("meow", user);
+      } else {
+        setUser(null);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const fetchUserDetail = async () => {
+    if (user) {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/getUser/${user.username}`,
+          {
+            withCredentials: true,
+          }
+        );
+        setUserObject(response.data);
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      setUserObject({});
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    console.log("user object", userObject);
+  }, [userObject]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserDetail();
+    }
+  }, [user]);
+
   return (
     <BoardWrapper>
       <BoardDiv>
@@ -234,10 +312,15 @@ function Board() {
         </GridDiv>
       </BoardDiv>
       <div className="wrapper">
-        <div>
-          <h2>Wins: {wins}</h2>
-          <h2>Losses: {losses}</h2>
-        </div>
+        {user && (
+          <div>
+            <h2>{userObject.username}</h2>
+            <h2>Win streak: {userObject.streak}</h2>
+            <h2>Wins: {userObject.wins}</h2>
+            <h2>Losses: {userObject.losses}</h2>
+            <button onClick={() => navigate("/logout")}>logout</button>
+          </div>
+        )}
         {isWin && (
           <div>
             <h2>Winner</h2>

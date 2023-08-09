@@ -1,13 +1,40 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState("");
   const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post(
+        "https://prodle.net/login",
+        { username, password },
+        { withCredentials: true }
+      )
+      .then((response) => {
+        if (response.data.success) {
+          setUser(username);
+          navigate("/");
+          console.log(user, " has logged in");
+        } else {
+          //did not login
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setUsername("");
+    setPassword("");
+  };
+
   return (
     <ContainerDiv>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div>
           <h2>Login</h2>
           <label>username</label>
@@ -22,7 +49,7 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           ></input>
-          <button>Login</button>
+          <button type="submit">Login</button>
           <h3 onClick={() => navigate("/register")}>Register</h3>
         </div>
       </form>
