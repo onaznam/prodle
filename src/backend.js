@@ -11,9 +11,11 @@ app.use(cookieParser());
 
 require("dotenv").config();
 
+const PORT = process.env.PORT || 5000;
+
 //So it can run locally
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", "https://prodle.net/");
   res.header(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS, PATCH"
@@ -197,7 +199,10 @@ app.use("/api", router);
 
 module.exports = router;
 
+app.get("/" , (req,res) => {
+  res.send("Hello to the hiroku");
+})
 
 app.listen(5000, () => {
-  console.log(`Server is running on port: ${process.env.PORT}`);
+  console.log(`Server is running on port: ${PORT}`);
 });
