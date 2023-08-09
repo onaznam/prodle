@@ -12,7 +12,7 @@ function Login() {
     e.preventDefault();
     axios
       .post(
-        "https://prodle-backend-78cbf7967fa3.herokuapp.com/login",
+        "http://localhost:3000/login",
         { username, password },
         { withCredentials: true }
       )
