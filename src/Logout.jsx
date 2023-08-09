@@ -6,7 +6,11 @@ function Logout() {
   const navigate = useNavigate();
   const handleLogout = () => {
     axios
-      .post("http://localhost:5000/logout", {}, { withCredentials: true })
+      .post(
+        "https://prodle-backend-78cbf7967fa3.herokuapp.com/logout",
+        {},
+        { withCredentials: true }
+      )
       .then(() => {
         navigate("/");
       })
