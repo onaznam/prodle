@@ -12,15 +12,14 @@ function Login() {
     e.preventDefault();
     axios
       .post(
-        "https://prodle.net/login",
+        "http://localhost:5000/login",
         { username, password },
         { withCredentials: true }
       )
       .then((response) => {
         if (response.data.success) {
           setUser(username);
-          navigate("/");
-          console.log(user, " has logged in");
+          navigate("/board");
         } else {
           //did not login
         }
