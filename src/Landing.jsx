@@ -17,9 +17,13 @@ function Landing() {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/user", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://prodle-backend-78cbf7967fa3.herokuapp.com/api/user",
+        {
+          withCredentials: true,
+        }
+      );
+
       // Checks if the response contains username field
       if (response.data && response.data.username) {
         setUser(response.data);
