@@ -343,11 +343,9 @@ function Board() {
 
 const BoardWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  div {
-    margin-right: 2rem;
-  }
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -374,6 +372,9 @@ const GridDiv = styled.div`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
 
   input {
     display: flex;
@@ -384,6 +385,11 @@ const GridDiv = styled.div`
     font-size: 2rem;
     font-family: "Open Sans", sans-serif;
     font-weight: bold;
+    @media (max-width: 768px) {
+      height: 2.5rem;
+      width: 2.5rem;
+      font-size: 1.5rem;
+    }
   }
 
   .correct {
