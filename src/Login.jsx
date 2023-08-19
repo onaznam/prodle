@@ -67,6 +67,9 @@ const ContainerDiv = styled.div`
   height: 100vh;
   font-family: "Montserrat", sans-serif;
   background-color: #c7c7c7;
+  @media (max-width: 768px) {
+    font-family: "Open Sans", sans-serif;
+  }
   button {
     background-color: #007bff;
     color: white;

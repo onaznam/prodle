@@ -317,21 +317,24 @@ function Board() {
       <div className="wrapper">
         {user && (
           <div>
-            <h2>{userObject.username}</h2>
+            <h2>User: {userObject.username}</h2>
             <h2>Win streak: {userObject.streak}</h2>
             <h2>Wins: {userObject.wins}</h2>
             <h2>Losses: {userObject.losses}</h2>
-            <button onClick={() => navigate("/logout")}>logout</button>
+            <div>
+              <button onClick={() => navigate("/logout")}>Logout</button>
+              <button onClick={() => navigate("/")}>Home</button>
+            </div>
           </div>
         )}
         {isWin && (
-          <div>
+          <div style={{ display: "flex" }}>
             <h2>Winner</h2>
             <button onClick={handleContinue}>Continue</button>
           </div>
         )}
         {isLoss && (
-          <div>
+          <div style={{ display: "flex" }}>
             <h2>Loser</h2>
             <button onClick={handleContinue}>Continue</button>
           </div>
@@ -346,10 +349,13 @@ const BoardWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (max-width: 768px) {
+    font-family: "Open Sans", sans-serif;
+  }
   .wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
   }
   button {
@@ -366,6 +372,10 @@ const BoardDiv = styled.div`
   justify-content: center;
   height: 100vh;
   font-family: "Montserrat", sans-serif;
+  @media (max-width: 768px) {
+    font-family: "Open Sans", sans-serif;
+    height: 0;
+  }
 `;
 
 const GridDiv = styled.div`
@@ -373,8 +383,9 @@ const GridDiv = styled.div`
   grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
   @media (max-width: 768px) {
+    font-family: "Open Sans", sans-serif;
     gap: 0.5rem;
-    margin-left: 1rem;
+    margin-left: 1.5rem;
     margin-right: 1rem;
   }
 
@@ -390,7 +401,8 @@ const GridDiv = styled.div`
     @media (max-width: 768px) {
       height: 2.5rem;
       width: 2.5rem;
-      font-size: 1.5rem;
+      font-size: 2rem;
+      font-family: "Open Sans", sans-serif;
     }
   }
 

@@ -97,6 +97,9 @@ const ContainerDiv = styled.div`
   align-items: center;
   height: 100vh;
   font-family: "Montserrat", sans-serif;
+  @media (max-width: 768px) {
+    font-family: "Open Sans", sans-serif;
+  }
 `;
 
 const LandingDiv = styled.div`
@@ -110,6 +113,9 @@ const LandingDiv = styled.div`
     width: 8rem;
     margin: 1rem;
     cursor: pointer;
+    @media (max-width: 768px) {
+      font-family: "Open Sans", sans-serif;
+    }
   }
 `;
 

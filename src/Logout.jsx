@@ -41,6 +41,9 @@ const ContainerDiv = styled.div`
   align-items: center;
   height: 100vh;
   font-family: "Montserrat", sans-serif;
+  @media (max-width: 768px) {
+    font-family: "Open Sans", sans-serif;
+  }
   background-color: #c7c7c7;
 
   button {
