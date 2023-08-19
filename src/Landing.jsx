@@ -18,7 +18,7 @@ function Landing() {
   const fetchUser = async () => {
     try {
       const response = await axios.get(
-        "https://prodle-backend-78cbf7967fa3.herokuapp.com/api/user",
+        "https://prodle-back-end-19c30685df21.herokuapp.com/api/user",
         {
           withCredentials: true,
         }

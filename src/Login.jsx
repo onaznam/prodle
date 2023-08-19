@@ -12,7 +12,7 @@ function Login() {
     e.preventDefault();
     axios
       .post(
-        "https://prodle-backend-78cbf7967fa3.herokuapp.com/login",
+        "https://prodle-back-end-19c30685df21.herokuapp.com/login",
         { username, password },
         { withCredentials: true }
       )
