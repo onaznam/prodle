@@ -374,6 +374,8 @@ const GridDiv = styled.div`
   gap: 1rem;
   @media (max-width: 768px) {
     gap: 0.5rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
   }
 
   input {
