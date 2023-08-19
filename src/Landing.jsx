@@ -45,13 +45,15 @@ function Landing() {
       <LandingDiv>
         <h1>Prodle</h1>
         <div>
-          <button onClick={handleOpen}>Instructions</button>
-          {user && (
-            <>
-              <button onClick={() => navigate("/board")}>Play now!</button>
-              <button onClick={() => navigate("/logout")}>Logout</button>
-            </>
-          )}
+          <div>
+            <button onClick={handleOpen}>Instructions</button>
+            {user && (
+              <>
+                <button onClick={() => navigate("/board")}>Play now!</button>
+                <button onClick={() => navigate("/logout")}>Logout</button>
+              </>
+            )}
+          </div>
           {!user && <button onClick={() => navigate("/login")}>Login</button>}
           <InstructionModal isOpen={isModalOpen} onClose={handleClose}>
             <InstructionDiv>

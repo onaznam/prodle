@@ -363,8 +363,8 @@ const BoardWrapper = styled.div`
     width: 6rem;
     font-family: "Open Sans", sans-serif;
     @media (max-width: 768px) {
-      height: 2rem;
-      width: 3rem;
+      height: 3rem;
+      width: 4rem;
     }
   }
 `;
