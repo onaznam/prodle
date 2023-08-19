@@ -361,6 +361,7 @@ const BoardWrapper = styled.div`
   button {
     height: 4rem;
     width: 6rem;
+    margin: 1rem;
     font-family: "Open Sans", sans-serif;
     @media (max-width: 768px) {
       height: 3rem;

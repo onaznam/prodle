@@ -53,8 +53,8 @@ function Landing() {
                 <button onClick={() => navigate("/logout")}>Logout</button>
               </>
             )}
+            {!user && <button onClick={() => navigate("/login")}>Login</button>}
           </div>
-          {!user && <button onClick={() => navigate("/login")}>Login</button>}
           <InstructionModal isOpen={isModalOpen} onClose={handleClose}>
             <InstructionDiv>
               <h2>Every day users have a chance to guess the daily word</h2>
