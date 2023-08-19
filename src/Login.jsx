@@ -18,8 +18,11 @@ function Login() {
       )
       .then((response) => {
         if (response.data.success) {
+          console.log(response);
+          console.log(response.data);
           setUser(username);
           navigate("/board");
+          console.log(user, " logged in homie");
         } else {
           //did not login
         }
