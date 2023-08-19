@@ -7,7 +7,7 @@ function Logout() {
   const handleLogout = () => {
     axios
       .post(
-        "https://prodle-back-end-19c30685df21.herokuapp.com//logout",
+        "https://prodle-back-end-19c30685df21.herokuapp.com/logout",
         {},
         { withCredentials: true }
       )
