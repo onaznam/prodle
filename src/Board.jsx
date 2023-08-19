@@ -362,6 +362,10 @@ const BoardWrapper = styled.div`
     height: 4rem;
     width: 6rem;
     font-family: "Open Sans", sans-serif;
+    @media (max-width: 768px) {
+      height: 2rem;
+      width: 3rem;
+    }
   }
 `;
 
@@ -370,11 +374,11 @@ const BoardDiv = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  //height: 100vh;
+  margin-top: 2rem;
   font-family: "Montserrat", sans-serif;
   @media (max-width: 768px) {
     font-family: "Open Sans", sans-serif;
-    height: 0;
   }
 `;
 
@@ -385,8 +389,8 @@ const GridDiv = styled.div`
   @media (max-width: 768px) {
     font-family: "Open Sans", sans-serif;
     gap: 0.5rem;
-    margin-left: 1.5rem;
-    margin-right: 1rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
   }
 
   input {
