@@ -45,7 +45,7 @@ function Landing() {
       <LandingDiv>
         <h1>Prodle</h1>
         <div>
-          <div>
+          <div style={{ display: "flex", flexWrap: "wrap" }}>
             <button onClick={handleOpen}>Instructions</button>
             {user && (
               <>
