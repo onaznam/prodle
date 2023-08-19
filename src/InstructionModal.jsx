@@ -11,6 +11,8 @@ const modalStyle = {
   padding: "20px",
   width: "80%",
   maxWidth: "50rem",
+  maxHeight: "90%",
+  overflowY: "auto",
 };
 
 const overlayStyle = {
