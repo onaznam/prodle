@@ -26,6 +26,7 @@ export const KeyboardDiv = styled.div`
   } */
 
   .desktop-button {
+    color: black;
     height: 3rem;
     width: 3rem;
     border: 1px solid black;

@@ -95,15 +95,14 @@ const ContainerDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
   height: 100vh;
   font-family: "Roboto", sans-serif;
 `;
 
 const LandingDiv = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-
+  @media (max-width: 768px) {
+  }
   button {
     height: 4rem;
     width: 8rem;
