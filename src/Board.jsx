@@ -52,10 +52,13 @@ function Board() {
     let left = n * row - n;
     let right = n * row;
     const findIndex = letters.findIndex((value) => value === "");
+    console.log("delete! ", " left: ", left, "index: ", findIndex);
+
     if (value === "Go" || value === "ENTER") {
       handleEnter();
     } else if (value === "Del" || value === "BACKSPACE") {
-      if (findIndex < right && findIndex > left) {
+      if (findIndex <= right && findIndex > left) {
+        console.log("delete! ", " left: ", left, "index: ", findIndex);
         handleDelete(findIndex - 1);
       }
     } else {
@@ -208,7 +211,7 @@ function Board() {
     if (user) {
       axios
         .patch(
-          "http://localhost:5000/updateResults",
+          "https://prodle-back-end-19c30685df21.herokuapp.com/updateResults",
           {
             username: userObject.username,
             value: value,
@@ -237,7 +240,7 @@ function Board() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/words")
+    fetch("https://prodle-back-end-19c30685df21.herokuapp.com/api/words")
       .then((response) => response.json())
       .then((data) => {
         setData(data);
@@ -271,9 +274,12 @@ function Board() {
   //fetches current user
   const fetchUser = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/user", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://prodle-back-end-19c30685df21.herokuapp.com/api/user",
+        {
+          withCredentials: true,
+        }
+      );
       // Checks if the response contains username field
       if (response.data && response.data.username) {
         setUser(response.data);
@@ -290,7 +296,7 @@ function Board() {
     if (user) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/getUser/${user.username}`,
+          `https://prodle-back-end-19c30685df21.herokuapp.com/getUser/${user.username}`,
           {
             withCredentials: true,
           }
