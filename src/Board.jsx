@@ -1,170 +1,206 @@
-import React, { useState, createRef, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
+import { BoardWrapper, GridDiv, KeyboardDiv } from "./Styles";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-//#TODO add a timer
 function Board() {
   const [letters, setLetters] = useState(Array(36).fill(""));
   const [fieldStatus, setFieldStatus] = useState(Array(36).fill(""));
+  const [buttonStatus, setButtonStatus] = useState(Array(36).fill(""));
   const [todaysWord, setTodaysWord] = useState([]);
   const [row, setRow] = useState(1);
+  const [currentRow, setCurrentRow] = useState(1);
   const [wins, setWins] = useState(0);
   const [losses, setLosses] = useState(0);
-  const [focusedIndex, setFocusedIndex] = useState(0);
   const [isLoss, setIsLoss] = useState(false);
   const [isWin, setIsWin] = useState(false);
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [userObject, setUserObject] = useState({});
-  const navigate = useNavigate();
+  const [buttonClasses, setButtonClasses] = useState({});
 
-  const refs = Array(36)
-    .fill()
-    .map(() => createRef());
+  let keyboard = {
+    1: ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    2: ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+    3: ["Go", "Z", "X", "C", "V", "B", "N", "M", "Del"],
+  };
 
-  const handleChange = (i, e) => {
-    const updateValues = [...letters];
-    let input = e.target.value;
-    if ((input.length === 1 && /[a-zA-Z]/.test(input)) || input === "") {
-      input = input.toUpperCase();
-      updateValues[i] = input;
-      setLetters(updateValues);
-      if (input.length === 1) {
-        if (refs[i + 1]) {
-          refs[i + 1].current.focus();
-        }
+  let desktopBoard = {
+    1: ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    2: ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+    3: ["Z", "X", "C", "V", "B", "N", "M"],
+  };
+
+  const isMobile = window.innerWidth <= 768;
+
+  const handleClassnameChange = (value, type) => {
+    setButtonClasses((prevClasses) => {
+      const newClasses = { ...prevClasses };
+      if (type === "correct") {
+        newClasses[value] = "green";
+      } else if (type === "incorrect") {
+        newClasses[value] = "grey";
+      } else if (type === "close") {
+        newClasses[value] = "yellow";
+      }
+
+      return newClasses;
+    });
+  };
+
+  const handleKeyboardChange = (value) => {
+    let n = 6;
+    let left = n * row - n;
+    let right = n * row;
+    const findIndex = letters.findIndex((value) => value === "");
+    if (value === "Go" || value === "ENTER") {
+      handleEnter();
+    } else if (value === "Del" || value === "BACKSPACE") {
+      if (findIndex < right && findIndex > left) {
+        handleDelete(findIndex - 1);
+      }
+    } else {
+      if (findIndex < right && findIndex >= left) {
+        const updateValues = [...letters];
+        updateValues[findIndex] = value;
+        setLetters(updateValues);
       }
     }
   };
 
-  const handleKeyDown = (i, e) => {
-    if (e.key === "Backspace" || e.key === "Delete") {
-      const updateValues = [...letters];
-      if (letters[i] === "" && i > 0) {
-        if (i % 6 !== 0) {
-          updateValues[i - 1] = "";
-          setLetters(updateValues);
-          refs[i - 1].current.focus();
-        }
-      } else {
-        updateValues[i] = "";
+  const handleDelete = (index) => {
+    const updateValues = [...letters];
+    if (letters[index] === "" && index > 0) {
+      if (index % 6 !== 0) {
+        updateValues[index - 1] = "";
         setLetters(updateValues);
       }
-    } else if (e.key === "Enter" || e.key === "enter") {
-      let slicedArr, left, right;
-      if (row === 1) {
-        left = 0;
-        right = 6;
-        slicedArr = letters.slice(left, right);
-      } else if (row === 2) {
-        left = 6;
-        right = 12;
-        slicedArr = letters.slice(left, right);
-      } else if (row === 3) {
-        left = 12;
-        right = 18;
-        slicedArr = letters.slice(left, right);
-      } else if (row === 4) {
-        left = 18;
-        right = 24;
-        slicedArr = letters.slice(left, right);
-      } else if (row === 5) {
-        left = 24;
-        right = 30;
-        slicedArr = letters.slice(left, right);
-      } else if (row === 6) {
-        left = 30;
-        right = 36;
-        slicedArr = letters.slice(30, 36);
-      }
-      const isFilled = slicedArr.every((item) => item !== "");
+    } else {
+      updateValues[index] = "";
+      setLetters(updateValues);
+    }
+  };
 
-      //test validity
-      let isValid = [];
+  useEffect(() => {
+    setCurrentRow((r) => r + 1);
+  }, [row]);
+
+  //desktop keyboard input
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      const keyValue = e.key.toUpperCase();
+      if (
+        keyboard[1].includes(keyValue) ||
+        keyboard[2].includes(keyValue) ||
+        keyboard[3].includes(keyValue) ||
+        keyValue === "ENTER" ||
+        keyValue === "BACKSPACE"
+      ) {
+        handleKeyboardChange(keyValue);
+      }
+    };
+    document.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  });
+
+  const handleEnter = () => {
+    //get the current row
+    let n = 6;
+    let currentRow,
+      left = row * n - n,
+      right = row * n;
+    currentRow = letters.slice(left, right);
+
+    //test validity
+    const isFilled = currentRow.every((item) => item !== "");
+    let isValid = [];
+
+    for (let i = 0; i < 6; i++) {
+      isValid.push(currentRow[i]);
+    }
+    let testValidity = isValid.join("");
+    let testWord = testValidity.toLowerCase();
+    const isValidWord = Object.values(data).some(
+      (wordObj) => wordObj.iambic === testWord
+    );
+
+    //inputted word is valid and
+    if (isFilled && isValidWord) {
+      //this is to color the boxes
+      const statusCopy = [...fieldStatus];
+      let slicedAnswer = todaysWord.slice(0, 6);
+
+      //map contains all the inputted values
+      let map = new Map();
       for (let i = 0; i < 6; i++) {
-        isValid.push(slicedArr[i]);
+        if (map.has(currentRow[i])) {
+          map.set(currentRow[i], map.get(currentRow[i]) + 1);
+        } else {
+          map.set(currentRow[i], 1);
+        }
       }
-      let testValidity = isValid.join("");
-      let testWord = testValidity.toLowerCase();
-      const isValidWord = Object.values(data).some(
-        (wordObj) => wordObj.iambic === testWord
-      );
 
-      if (isFilled && isValidWord) {
-        //you should check here if its also filled with a correct word
-        const statusCopy = [...fieldStatus];
-        let slicedAnswer = todaysWord.slice(0, 6);
-        let leftCopy = left;
+      let answerMap = new Map();
+      for (let i = 0; i < 6; i++) {
+        if (answerMap.has(slicedAnswer[i])) {
+          answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) + 1);
+        } else {
+          answerMap.set(slicedAnswer[i], 1);
+        }
+      }
 
-        //map contains all the inputted values
-        let map = new Map();
-        for (let i = 0; i < 6; i++) {
-          if (map.has(slicedArr[i])) {
-            map.set(slicedArr[i], map.get(slicedArr[i]) + 1);
+      // First, flag the correct ones
+      for (let i = 0; i < 6; i++) {
+        if (currentRow[i] === slicedAnswer[i]) {
+          //"currentrow[I] is the value like "X" or "M"
+          handleClassnameChange(currentRow[i], "correct");
+          statusCopy[left + i] = "correct";
+          map.set(currentRow[i], map.get(currentRow[i]) - 1);
+          answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) - 1);
+        }
+      }
+
+      // Then check for close ones
+      for (let i = 0; i < 6; i++) {
+        if (
+          statusCopy[left + i] !== "correct" &&
+          todaysWord.includes(currentRow[i])
+        ) {
+          if (answerMap.get(currentRow[i]) > 0) {
+            handleClassnameChange(currentRow[i], "close");
+            statusCopy[left + i] = "close";
+            answerMap.set(currentRow[i], answerMap.get(currentRow[i]) - 1);
           } else {
-            map.set(slicedArr[i], 1);
-          }
-        }
-
-        //first get all correct values
-        let correct_array = [];
-
-        let answerMap = new Map();
-        for (let i = 0; i < 6; i++) {
-          if (answerMap.has(slicedAnswer[i])) {
-            answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) + 1);
-          } else {
-            answerMap.set(slicedAnswer[i], 1);
-          }
-        }
-
-        // First, flag the correct ones
-        for (let i = 0; i < 6; i++) {
-          if (slicedArr[i] === slicedAnswer[i]) {
-            statusCopy[left + i] = "correct";
-            map.set(slicedArr[i], map.get(slicedArr[i]) - 1);
-            answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) - 1);
-          }
-        }
-
-        // Then check for close ones
-        for (let i = 0; i < 6; i++) {
-          if (
-            statusCopy[left + i] !== "correct" &&
-            todaysWord.includes(slicedArr[i])
-          ) {
-            if (answerMap.get(slicedArr[i]) > 0) {
-              statusCopy[left + i] = "close";
-              answerMap.set(slicedArr[i], answerMap.get(slicedArr[i]) - 1);
-            } else {
-              statusCopy[left + i] = "incorrect";
-            }
-          } else if (statusCopy[left + i] !== "correct") {
+            handleClassnameChange(currentRow[i], "incorrect");
             statusCopy[left + i] = "incorrect";
           }
+        } else if (statusCopy[left + i] !== "correct") {
+          handleClassnameChange(currentRow[i], "incorrect");
+          statusCopy[left + i] = "incorrect";
         }
-        setFieldStatus(statusCopy);
-        //goal
-        if (slicedAnswer.join() === slicedArr.join()) {
-          setWins((w) => w + 1);
-          setIsWin(true);
-          handleResult("win");
-        } else if (row === 6 && !(slicedAnswer.join() === slicedArr.join())) {
-          setLosses((l) => l + 1);
-          setIsLoss(true);
-          handleResult("loss");
-        } else {
-          setRow((r) => r + 1);
-        }
-      } else {
-        const copyLetters = [...letters];
-        for (let i = left; i < right; i++) {
-          copyLetters[i] = "";
-        }
-        setLetters(copyLetters);
-        refs[left].current.focus();
       }
+      setFieldStatus(statusCopy);
+      //goal
+      if (slicedAnswer.join() === currentRow.join()) {
+        setWins((w) => w + 1);
+        setIsWin(true);
+        handleResult("win");
+      } else if (row === 6 && !(slicedAnswer.join() === currentRow.join())) {
+        setLosses((l) => l + 1);
+        setIsLoss(true);
+        handleResult("loss");
+      } else {
+        setRow((r) => r + 1);
+      }
+    }
+    //word is not valid or complete, clear it
+    else {
+      const copyLetters = [...letters];
+      for (let i = left; i < right; i++) {
+        copyLetters[i] = "";
+      }
+      setLetters(copyLetters);
     }
   };
 
@@ -172,7 +208,7 @@ function Board() {
     if (user) {
       axios
         .patch(
-          "https://prodle-back-end-19c30685df21.herokuapp.com/updateResults",
+          "http://localhost:5000/updateResults",
           {
             username: userObject.username,
             value: value,
@@ -194,8 +230,6 @@ function Board() {
     setLetters(Array(36).fill(""));
     setFieldStatus(Array(36).fill(""));
     setRow(1);
-    setFocusedIndex(0);
-    refs[0].current.focus();
     setIsLoss(false);
     setIsWin(false);
     //generate a new word
@@ -203,7 +237,7 @@ function Board() {
   };
 
   useEffect(() => {
-    fetch("https://prodle-back-end-19c30685df21.herokuapp.com/api/words")
+    fetch("http://localhost:5000/api/words")
       .then((response) => response.json())
       .then((data) => {
         setData(data);
@@ -215,19 +249,10 @@ function Board() {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      refs[(row - 1) * 6]?.current?.focus();
-    }, 100);
-  }, [row]);
-
-  useEffect(() => {
-    refs[0].current.focus();
-  }, []);
-
-  useEffect(() => {
     console.log("todays word ", todaysWord);
   }, [todaysWord]);
 
+  //get a random word from the list of words
   const randomWord = () => {
     let random_number = Math.floor(Math.random() * 17250) + 1;
     let word = data[random_number].iambic;
@@ -236,24 +261,22 @@ function Board() {
     setTodaysWord(split_word);
   };
 
+  //generate random word once the list loads
   useEffect(() => {
     if (!isLoading) {
       randomWord();
     }
   }, [isLoading]);
 
+  //fetches current user
   const fetchUser = async () => {
     try {
-      const response = await axios.get(
-        "https://prodle-back-end-19c30685df21.herokuapp.com/api/user",
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get("http://localhost:5000/api/user", {
+        withCredentials: true,
+      });
       // Checks if the response contains username field
       if (response.data && response.data.username) {
         setUser(response.data);
-        console.log("meow", user);
       } else {
         setUser(null);
       }
@@ -261,11 +284,13 @@ function Board() {
       console.error(err);
     }
   };
+
+  //generates users detail
   const fetchUserDetail = async () => {
     if (user) {
       try {
         const response = await axios.get(
-          `https://prodle-back-end-19c30685df21.herokuapp.com/getUser/${user.username}`,
+          `http://localhost:5000/getUser/${user.username}`,
           {
             withCredentials: true,
           }
@@ -285,10 +310,6 @@ function Board() {
   }, []);
 
   useEffect(() => {
-    console.log("user object", userObject);
-  }, [userObject]);
-
-  useEffect(() => {
     if (user) {
       fetchUserDetail();
     }
@@ -296,139 +317,51 @@ function Board() {
 
   return (
     <BoardWrapper>
-      <BoardDiv>
-        <h1>Prodle</h1>
-        <GridDiv>
-          {letters.map((value, i) => (
-            <input
-              key={i}
-              type="text"
-              maxLength={1}
-              value={value}
-              ref={refs[i]}
-              onChange={(e) => handleChange(i, e)}
-              onKeyDown={(e) => handleKeyDown(i, e)}
-              className={fieldStatus[i]}
-              disabled={Math.floor(i / 6) !== row - 1 || isWin || isLoss}
-            />
-          ))}
-        </GridDiv>
-      </BoardDiv>
-      <div className="wrapper">
-        {user && (
-          <div>
-            <h2>User: {userObject.username}</h2>
-            <h2>Win streak: {userObject.streak}</h2>
-            <h2>Wins: {userObject.wins}</h2>
-            <h2>Losses: {userObject.losses}</h2>
-            <div>
-              <button onClick={() => navigate("/logout")}>Logout</button>
-              <button onClick={() => navigate("/")}>Home</button>
-            </div>
-          </div>
-        )}
-        {isWin && (
-          <div style={{ display: "flex" }}>
-            <h2>Winner</h2>
-            <button onClick={handleContinue}>Continue</button>
-          </div>
-        )}
-        {isLoss && (
-          <div style={{ display: "flex" }}>
-            <h2>Loser</h2>
-            <button onClick={handleContinue}>Continue</button>
-          </div>
-        )}
-      </div>
+      <h1>Prodle</h1>
+      <GridDiv>
+        {letters.map((value, i) => (
+          <input
+            key={i}
+            type="text"
+            maxLength={1}
+            value={value}
+            className={fieldStatus[i]}
+            disabled={Math.floor(i / 6) !== row - 1 || isWin || isLoss}
+          />
+        ))}
+      </GridDiv>
+      <KeyboardDiv>
+        {isMobile
+          ? Object.values(keyboard).map((rows, rowIndex) => (
+              <div className="button-row" key={rowIndex}>
+                {rows.map((letter, index) => (
+                  <button
+                    className={`desktop-button ${buttonClasses[letter] || ""}`}
+                    key={index}
+                    value={letter}
+                    onClick={(e) => handleKeyboardChange(e.target.value)}
+                  >
+                    {letter}
+                  </button>
+                ))}
+              </div>
+            ))
+          : Object.values(desktopBoard).map((rows, rowIndex) => (
+              <div className="button-row" key={rowIndex}>
+                {rows.map((letter, index) => (
+                  <div
+                    className={`desktop-button ${buttonClasses[letter] || ""}`}
+                    key={index}
+                    value={letter}
+                  >
+                    {letter}
+                  </div>
+                ))}
+              </div>
+            ))}
+      </KeyboardDiv>
     </BoardWrapper>
   );
 }
-
-const BoardWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  @media (max-width: 768px) {
-    font-family: "Open Sans", sans-serif;
-  }
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  button {
-    height: 4rem;
-    width: 6rem;
-    margin: 1rem;
-    font-family: "Open Sans", sans-serif;
-    @media (max-width: 768px) {
-      height: 3rem;
-      width: 4rem;
-    }
-  }
-`;
-
-const BoardDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  //height: 100vh;
-  margin-top: 2rem;
-  font-family: "Montserrat", sans-serif;
-  @media (max-width: 768px) {
-    font-family: "Open Sans", sans-serif;
-  }
-`;
-
-const GridDiv = styled.div`
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 1rem;
-  @media (max-width: 768px) {
-    font-family: "Open Sans", sans-serif;
-    gap: 0.5rem;
-    margin-left: 2rem;
-    margin-right: 2rem;
-  }
-
-  input {
-    display: flex;
-    text-align: center;
-    height: 4rem;
-    width: 4rem;
-    border-radius: 5px;
-    font-size: 2rem;
-    font-family: "Open Sans", sans-serif;
-    font-weight: bold;
-    @media (max-width: 768px) {
-      height: 2.5rem;
-      width: 2.5rem;
-      font-size: 2rem;
-      font-family: "Open Sans", sans-serif;
-    }
-  }
-
-  .correct {
-    transition: transform 2s, background-color 4s;
-    transform-style: preserve-3d;
-    transform: perspective(1000px) rotateY(360deg);
-    background-color: #00d900;
-  }
-  .incorrect {
-    transition: transform 2s, background-color 4s;
-    transform-style: preserve-3d;
-    transform: perspective(1000px) rotateY(360deg);
-    background-color: grey;
-  }
-  .close {
-    transition: transform 2s, background-color 4s;
-    transform-style: preserve-3d;
-    transform: perspective(1000px) rotateY(360deg);
-    background-color: yellow;
-  }
-`;
 
 export default Board;

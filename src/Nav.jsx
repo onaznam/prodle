@@ -8,11 +8,6 @@ function Nav() {
 export default Nav;
 
 const StyledNav = styled.nav`
-  display: flex;
-  justify-content: center;
-  background-color: #eeeeee;
-  position: absolute;
-  height: 2rem;
   width: 100%;
-  margin-top: 5rem;
+  background: linear-gradient(90deg, #caf2ff 0%, #06ffee 100%);
 `;
