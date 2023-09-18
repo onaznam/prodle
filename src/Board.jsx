@@ -241,7 +241,7 @@ function Board() {
   };
 
   useEffect(() => {
-    fetch("https://prodle-back-end-19c30685df21.herokuapp.com/api/words")
+    fetch("https://prodle-back-end-19c30685df21.herokuapp.com/words")
       .then((response) => response.json())
       .then((data) => {
         setData(data);
@@ -259,7 +259,7 @@ function Board() {
   const getTodaysWord = async () => {
     try {
       const response = await fetch(
-        "https://prodle-back-end-19c30685df21.herokuapp.com/api/todaysword"
+        "https://prodle-back-end-19c30685df21.herokuapp.com/todaysword"
       );
       const data = await response.json();
       setTodaysWordData(data);
@@ -331,6 +331,7 @@ function Board() {
   useEffect(() => {
     if (user) {
       fetchUserDetail();
+      console.log(userObject);
     }
   }, [user]);
 
