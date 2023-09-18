@@ -17,6 +17,7 @@ function Board() {
   const [user, setUser] = useState(null);
   const [userObject, setUserObject] = useState({});
   const [buttonClasses, setButtonClasses] = useState({});
+  const [todaysWordData, setTodaysWordData] = useState([]);
 
   let keyboard = {
     1: ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -57,7 +58,7 @@ function Board() {
     if (value === "Go" || value === "ENTER") {
       handleEnter();
     } else if (value === "Del" || value === "BACKSPACE") {
-      if (findIndex <= right && findIndex > left) {
+      if (findIndex <= right && findIndex > left && !isWin && !isLoss) {
         console.log("delete! ", " left: ", left, "index: ", findIndex);
         handleDelete(findIndex - 1);
       }
@@ -236,7 +237,7 @@ function Board() {
     setIsLoss(false);
     setIsWin(false);
     //generate a new word
-    randomWord();
+    getTodaysWord();
   };
 
   useEffect(() => {
@@ -255,19 +256,31 @@ function Board() {
     console.log("todays word ", todaysWord);
   }, [todaysWord]);
 
-  //get a random word from the list of words
-  const randomWord = () => {
-    let random_number = Math.floor(Math.random() * 17250) + 1;
-    let word = data[random_number].iambic;
-    let uppercase_word = word.toUpperCase();
-    let split_word = uppercase_word.split("");
-    setTodaysWord(split_word);
+  const getTodaysWord = async () => {
+    try {
+      const response = await fetch(
+        "https://prodle-back-end-19c30685df21.herokuapp.com/api/todaysword"
+      );
+      const data = await response.json();
+      setTodaysWordData(data);
+
+      // // Now, you can use the newly fetched data
+      if (todaysWordData.length > 0) {
+        console.log("mew");
+        let word = todaysWordData[0].todaysword;
+        let uppercase_word = word.toUpperCase();
+        let split_word = uppercase_word.split("");
+        setTodaysWord(split_word);
+      }
+    } catch (error) {
+      console.log(error, " error");
+    }
   };
 
   //generate random word once the list loads
   useEffect(() => {
     if (!isLoading) {
-      randomWord();
+      getTodaysWord();
     }
   }, [isLoading]);
 
@@ -296,7 +309,7 @@ function Board() {
     if (user) {
       try {
         const response = await axios.get(
-          `https://prodle-back-end-19c30685df21.herokuapp.com/getUser/${user.username}`,
+          `https://prodle-back-end-19c30685df21.herokuapp.com/api/user/${user.username}`,
           {
             withCredentials: true,
           }

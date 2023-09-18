@@ -104,6 +104,7 @@ const LandingDiv = styled.div`
   @media (max-width: 768px) {
   }
   button {
+    color: black;
     height: 4rem;
     width: 8rem;
     margin: 1rem;

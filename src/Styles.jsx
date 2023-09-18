@@ -47,7 +47,7 @@ export const KeyboardDiv = styled.div`
     margin-top: 1rem;
   }
   .desktop-button.green {
-    background-color: green;
+    background-color: #05ee05;
   }
 
   .desktop-button.grey {
