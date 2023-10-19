@@ -166,6 +166,7 @@ function Board() {
           statusCopy[left + i] = "correct";
           map.set(currentRow[i], map.get(currentRow[i]) - 1);
           answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) - 1);
+          uniqueWords.delete(currentRow[i]);
         }
       }
 
@@ -176,7 +177,9 @@ function Board() {
           todaysWord.includes(currentRow[i])
         ) {
           if (answerMap.get(currentRow[i]) > 0) {
-            handleClassnameChange(currentRow[i], "close");
+            if (!uniqueWords.has(currentRow[i])) {
+              handleClassnameChange(currentRow[i], "close");
+            }
             statusCopy[left + i] = "close";
             answerMap.set(currentRow[i], answerMap.get(currentRow[i]) - 1);
           } else {
