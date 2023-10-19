@@ -18,7 +18,7 @@ function Board() {
   const [userObject, setUserObject] = useState({});
   const [buttonClasses, setButtonClasses] = useState({});
   const [todaysWordData, setTodaysWordData] = useState([]);
-  const [uniqueButtons, setUniqueButtons] = useState([]);
+  const [uniqueWords, setUniqueWords] = useState(new Set());
 
   let keyboard = {
     1: ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -110,6 +110,7 @@ function Board() {
   });
 
   const handleEnter = () => {
+    console.log(uniqueWords, "yes");
     //get the current row
     let n = 6;
     let currentRow,
@@ -257,15 +258,14 @@ function Board() {
 
   useEffect(() => {
     console.log("todays word ", todaysWord);
-    let words = new Set();
-
     if (todaysWord) {
+      let words = new Set();
       for (let i = 0; i < 6; i++) {
         console.log(todaysWord[i]);
-        words.add[todaysWord[i]];
+        words.add(todaysWord[i]);
       }
+      setUniqueWords(words);
     }
-    console.log("This should only have unique values: ", words);
   }, [todaysWord]);
 
   const getTodaysWord = async () => {
