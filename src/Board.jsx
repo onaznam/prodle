@@ -262,12 +262,9 @@ function Board() {
         "https://prodle-back-end-19c30685df21.herokuapp.com/todaysword"
       );
       const data = await response.json();
-      setTodaysWordData(data);
-
-      // // Now, you can use the newly fetched data
-      if (todaysWordData.length > 0) {
-        console.log("mew");
-        let word = todaysWordData[0].todaysword;
+      // Use data directly without depending on todaysWordData state
+      let word = data[0]?.todaysword;
+      if (word) {
         let uppercase_word = word.toUpperCase();
         let split_word = uppercase_word.split("");
         setTodaysWord(split_word);
