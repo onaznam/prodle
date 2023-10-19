@@ -145,8 +145,12 @@ function Board() {
         }
       }
 
+      let uniqueButtons = new Set();
+
       let answerMap = new Map();
       for (let i = 0; i < 6; i++) {
+        //
+        uniqueButtons.add(slicedAnswer[i]);
         if (answerMap.has(slicedAnswer[i])) {
           answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) + 1);
         } else {
@@ -162,6 +166,9 @@ function Board() {
           statusCopy[left + i] = "correct";
           map.set(currentRow[i], map.get(currentRow[i]) - 1);
           answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) - 1);
+          if (uniqueButtons.has(currentRow[i])) {
+            uniqueButtons.delete(currentRow[i]);
+          }
         }
       }
 
@@ -171,7 +178,10 @@ function Board() {
           statusCopy[left + i] !== "correct" &&
           todaysWord.includes(currentRow[i])
         ) {
-          if (answerMap.get(currentRow[i]) > 0) {
+          if (
+            answerMap.get(currentRow[i]) > 0 &&
+            uniqueButtons.has(currentRow[i])
+          ) {
             handleClassnameChange(currentRow[i], "close");
             statusCopy[left + i] = "close";
             answerMap.set(currentRow[i], answerMap.get(currentRow[i]) - 1);
@@ -273,13 +283,6 @@ function Board() {
       console.log(error, " error");
     }
   };
-
-  //generate random word once the list loads
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     getTodaysWord();
-  //   }
-  // }, [isLoading]);
 
   useEffect(() => {
     getTodaysWord();
