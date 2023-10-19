@@ -145,8 +145,8 @@ function Board() {
         }
       }
 
+      //all correct on screen buttons
       let uniqueButtons = new Set();
-
       let answerMap = new Map();
       for (let i = 0; i < 6; i++) {
         //
@@ -180,7 +180,7 @@ function Board() {
         ) {
           if (
             answerMap.get(currentRow[i]) > 0 &&
-            uniqueButtons.has(currentRow[i])
+            !uniqueButtons.has(currentRow[i])
           ) {
             handleClassnameChange(currentRow[i], "close");
             statusCopy[left + i] = "close";
