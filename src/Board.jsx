@@ -278,11 +278,15 @@ function Board() {
   };
 
   //generate random word once the list loads
+  // useEffect(() => {
+  //   if (!isLoading) {
+  //     getTodaysWord();
+  //   }
+  // }, [isLoading]);
+
   useEffect(() => {
-    if (!isLoading) {
-      getTodaysWord();
-    }
-  }, [isLoading]);
+    getTodaysWord();
+  }, []);
 
   //fetches current user
   const fetchUser = async () => {
