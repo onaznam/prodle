@@ -293,6 +293,9 @@ function Board() {
           withCredentials: true,
         }
       );
+      if (response) {
+        console.log("There's a response: ", response);
+      }
       // Checks if the response contains username field
       if (response.data && response.data.username) {
         setUser(response.data);

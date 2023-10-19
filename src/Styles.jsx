@@ -18,7 +18,7 @@ export const KeyboardDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 1rem;
+  margin-top: 0.3rem;
 
   /* button {
     height: 2.5rem;
