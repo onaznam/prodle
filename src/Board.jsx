@@ -33,10 +33,13 @@ function Board() {
   };
 
   const isMobile = window.innerWidth <= 768;
-
   const handleClassnameChange = (value, type) => {
     setButtonClasses((prevClasses) => {
       const newClasses = { ...prevClasses };
+
+      // Check if the class is already marked as 'correct', if so, don't update
+      if (newClasses[value] === "green") return newClasses;
+
       if (type === "correct") {
         newClasses[value] = "green";
       } else if (type === "incorrect") {
@@ -44,7 +47,6 @@ function Board() {
       } else if (type === "close") {
         newClasses[value] = "yellow";
       }
-
       return newClasses;
     });
   };
@@ -261,6 +263,7 @@ function Board() {
 
   useEffect(() => {
     console.log("todays word ", todaysWord);
+    //TODAYS WORD IS PLEASE
     if (todaysWord) {
       let words = new Set();
       for (let i = 0; i < 6; i++) {
