@@ -18,6 +18,7 @@ function Board() {
   const [userObject, setUserObject] = useState({});
   const [buttonClasses, setButtonClasses] = useState({});
   const [todaysWordData, setTodaysWordData] = useState([]);
+  const [uniqueButtons, setUniqueButtons] = useState([]);
 
   let keyboard = {
     1: ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -146,11 +147,9 @@ function Board() {
       }
 
       //all correct on screen buttons
-      let uniqueButtons = new Set();
       let answerMap = new Map();
       for (let i = 0; i < 6; i++) {
         //
-        uniqueButtons.add(slicedAnswer[i]);
         if (answerMap.has(slicedAnswer[i])) {
           answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) + 1);
         } else {
@@ -166,9 +165,6 @@ function Board() {
           statusCopy[left + i] = "correct";
           map.set(currentRow[i], map.get(currentRow[i]) - 1);
           answerMap.set(slicedAnswer[i], answerMap.get(slicedAnswer[i]) - 1);
-          if (uniqueButtons.has(currentRow[i])) {
-            uniqueButtons.delete(currentRow[i]);
-          }
         }
       }
 
@@ -178,10 +174,7 @@ function Board() {
           statusCopy[left + i] !== "correct" &&
           todaysWord.includes(currentRow[i])
         ) {
-          if (
-            answerMap.get(currentRow[i]) > 0 &&
-            !uniqueButtons.has(currentRow[i])
-          ) {
+          if (answerMap.get(currentRow[i]) > 0) {
             handleClassnameChange(currentRow[i], "close");
             statusCopy[left + i] = "close";
             answerMap.set(currentRow[i], answerMap.get(currentRow[i]) - 1);
@@ -264,6 +257,15 @@ function Board() {
 
   useEffect(() => {
     console.log("todays word ", todaysWord);
+    let words = new Set();
+
+    if (todaysWord) {
+      for (let i = 0; i < 6; i++) {
+        console.log(todaysWord[i]);
+        words.add[todaysWord[i]];
+      }
+    }
+    console.log("This should only have unique values: ", words);
   }, [todaysWord]);
 
   const getTodaysWord = async () => {
