@@ -177,7 +177,7 @@ function Board() {
           todaysWord.includes(currentRow[i])
         ) {
           if (answerMap.get(currentRow[i]) > 0) {
-            if (!uniqueWords.has(currentRow[i])) {
+            if (uniqueWords.has(currentRow[i])) {
               handleClassnameChange(currentRow[i], "close");
             }
             statusCopy[left + i] = "close";
