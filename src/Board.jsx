@@ -221,7 +221,7 @@ function Board() {
     if (user) {
       axios
         .patch(
-          "https://prodle-back-end-19c30685df21.herokuapp.com/updateResults",
+          "https://busy-bright-april.glitch.me/updateResults",
           {
             username: userObject.username,
             value: value,
@@ -277,7 +277,7 @@ function Board() {
   const getTodaysWord = async () => {
     try {
       const response = await fetch(
-        "https://prodle-back-end-19c30685df21.herokuapp.com/todaysword"
+        "https://busy-bright-april.glitch.me/todaysword"
       );
       const data = await response.json();
       // Use data directly without depending on todaysWordData state
