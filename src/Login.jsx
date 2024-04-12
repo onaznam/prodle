@@ -12,7 +12,7 @@ function Login() {
     e.preventDefault();
     axios
       .post(
-        "https://prodle-back-end-19c30685df21.herokuapp.com/login",
+        "https://busy-bright-april.glitch.me/login",
         { username, password },
         { withCredentials: true }
       )

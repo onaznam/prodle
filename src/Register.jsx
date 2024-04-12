@@ -11,7 +11,7 @@ function Register() {
     e.preventDefault();
     if (password === retypePassword) {
       axios
-        .post("https://prodle-back-end-19c30685df21.herokuapp.com/register", {
+        .post("https://busy-bright-april.glitch.me/register", {
           username,
           password,
         })
