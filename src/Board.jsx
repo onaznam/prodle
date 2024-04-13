@@ -300,7 +300,7 @@ function Board() {
   const fetchUser = async () => {
     try {
       const response = await axios.get(
-        "https://prodle-back-end-19c30685df21.herokuapp.com/api/user",
+        "https://busy-bright-april.glitch.me/api/user",
         {
           withCredentials: true,
         }
@@ -324,7 +324,7 @@ function Board() {
     if (user) {
       try {
         const response = await axios.get(
-          `https://prodle-back-end-19c30685df21.herokuapp.com/api/user/${user.username}`,
+          `https://busy-bright-april.glitch.me/api/user/${user.username}`,
           {
             withCredentials: true,
           }
