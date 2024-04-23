@@ -250,7 +250,7 @@ function Board() {
   };
 
   useEffect(() => {
-    fetch("https://prodle-back-end-19c30685df21.herokuapp.com/words")
+    fetch("https://busy-bright-april.glitch.me/words")
       .then((response) => response.json())
       .then((data) => {
         setData(data);
